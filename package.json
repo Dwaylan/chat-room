@@ -1,0 +1,16 @@
+{
+  "name": "chat-room",
+  "version": "1.0.0",
+  "description": "Chatroom app leveraging firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "Dwaylan A. Applewhite",
+  "license": "ISC",
+  "devDependencies": {
+    "firebase": "^11.1.0"
+  }
+}
