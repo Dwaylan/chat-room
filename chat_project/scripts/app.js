@@ -3,9 +3,9 @@ import {
   getFirestore,
   collection,
   onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
+  // addDoc,
+  // deleteDoc,
+  // doc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,8 +14,8 @@ const firebaseConfig = {
   projectId: "chat-room-7be1f",
   storageBucket: "chat-room-7be1f.firebasestorage.app",
   messagingSenderId: "12639144394",
-  appId: "1:12639144394:web:b833a25f2f319c3c1d2733",
-  measurementId: "G-MTNEWJHE7V",
+  appId: "1:12639144394:web:74190b466b6034a51d2733",
+  measurementId: "G-G387D6DY6T",
 };
 
 // Initializing app
