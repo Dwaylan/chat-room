@@ -3,7 +3,9 @@ import {
   collection,
   addDoc,
   onSnapshot,
+  query,
   where,
+  orderBy,
 } from "@firebase/firestore";
 
 console.log("bundle successful. Hello from chat.js");
@@ -17,6 +19,7 @@ class Chatroom {
     this.room = room;
     this.user_name = user_name;
     this.chat = colRef;
+    this.unsub;
   }
   async addNewMessage(message) {
     // Formatting chat object
@@ -32,8 +35,13 @@ class Chatroom {
     return response;
   }
   getMessages(callback) {
-    where("room", "==", "gaming");
-    onSnapshot(this.chat, (snapshot) => {
+    // creating a query conditional using the 'where' method to specify rooms
+    this.unsub = this.chat;
+    const roomQuery = query(
+      this.chat,
+      where("room", "==", this.room, orderBy("created_at"))
+    );
+    onSnapshot(roomQuery, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           callback(change.doc._document.data.value.mapValue.fields);
@@ -41,9 +49,19 @@ class Chatroom {
       });
     });
   }
+  updateName(user_name) {
+    this.user_name = user_name;
+  }
+  updateChatRoom(room) {
+    this.room = room;
+    console.log("room updated");
+    // if (this.unsub) {
+    //   this.unsub();
+    // }
+  }
 }
 
-const chatroom = new Chatroom("gaming", "Junie");
+const chatroom = new Chatroom("general", "Junie");
 // console.log(chatroom);
 
 chatroom.getMessages((data) => {
@@ -52,11 +70,13 @@ chatroom.getMessages((data) => {
 
 // setting up real-time listener to get new chats
 
-// chatroom
-//   .addNewMessage("hey all")
-//   .then(() => {
-//     console.log("new message added");
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+// chatroom.updateChatRoom("gaming");
+
+setTimeout(() => {
+  chatroom.updateChatRoom("gaming");
+  chatroom.updateName("walnut");
+  chatroom.getMessages((data) => {
+    console.log(data);
+  });
+  chatroom.addNewMessage("hello");
+}, 3000);
