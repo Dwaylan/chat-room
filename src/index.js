@@ -17,7 +17,7 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 // Initializing the service
-export const db = getFirestore();
+const db = getFirestore();
 
 // Collection reference
 const colRef = collection(db, "chat");
@@ -29,7 +29,7 @@ getDocs(colRef)
     snapshot.docs.forEach((text) => {
       messages.push({ ...text.data(), id: text.id });
     });
-    console.log(messages);
+    // console.log(messages);
   })
   .catch((err) => {
     console.log(err);
