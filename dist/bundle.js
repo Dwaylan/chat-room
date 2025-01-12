@@ -30,13 +30,23 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
+/***/ "./src/app.js":
+/*!********************!*\
+  !*** ./src/app.js ***!
+  \********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _chat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./chat */ \"./src/chat.js\");\n/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui */ \"./src/ui.js\");\n\n\n\nconsole.log(\"bundle successful. Hello from app.js\");\n\n// DOM queries\nconst chatList = document.querySelector(\".chat-list\");\nconst chatUI = new _ui__WEBPACK_IMPORTED_MODULE_1__[\"default\"](chatList);\nconst updateMessage = document.querySelector(\".update-mssg\");\n\nconst newChatForm = document.querySelector(\".new-chat\");\nnewChatForm.addEventListener(\"submit\", (e) => {\n  e.preventDefault();\n  const message = newChatForm.message.value.trim();\n  chatroom\n    .addNewMessage(message)\n    .then(() => {\n      newChatForm.reset();\n    })\n    .catch((err) => {\n      console.log(err);\n    });\n});\n\n// Update username\nconst nameUpdate = document.querySelector(\".new-name\");\nnameUpdate.addEventListener(\"submit\", (e) => {\n  e.preventDefault();\n  // update name via chatroom class\n  const newName = nameUpdate.name.value.trim();\n  chatroom.updateName(newName);\n  // resetting form\n  nameUpdate.reset();\n});\n\nconst chatroom = new _chat__WEBPACK_IMPORTED_MODULE_0__.Chatroom(\"general\", \"Junie\");\n\n// Get chats and render\nchatroom.getMessages((data) => {\n  chatUI.render(data);\n  console.log(data);\n});\n\n\n//# sourceURL=webpack://chat-room/./src/app.js?");
+
+/***/ }),
+
 /***/ "./src/chat.js":
 /*!*********************!*\
   !*** ./src/chat.js ***!
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _firebase_firestore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @firebase/firestore */ \"./node_modules/@firebase/firestore/dist/index.esm2017.js\");\n\n\nconsole.log(\"bundle successful. Hello from chat.js\");\n\n// adding new chat documents\n\nconst db = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getFirestore)();\nconst colRef = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, \"chat\");\nclass Chatroom {\n  constructor(room, user_name) {\n    this.room = room;\n    this.user_name = user_name;\n    this.chat = colRef;\n    this.unsub;\n  }\n  async addNewMessage(message) {\n    // Formatting chat object\n    const now = new Date();\n    const newMessage = {\n      message: message,\n      user_name: this.user_name,\n      room: this.room,\n      created_at: now,\n    };\n    // saving the chat document\n    const response = await (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.addDoc)(this.chat, newMessage);\n    return response;\n  }\n  getMessages(callback) {\n    // creating a query conditional using the 'where' method to specify rooms\n    this.unsub = this.chat;\n    const roomQuery = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.query)(\n      this.chat,\n      (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.where)(\"room\", \"==\", this.room, (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.orderBy)(\"created_at\"))\n    );\n    (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.onSnapshot)(roomQuery, (snapshot) => {\n      snapshot.docChanges().forEach((change) => {\n        if (change.type === \"added\") {\n          callback(change.doc._document.data.value.mapValue.fields);\n        }\n      });\n    });\n  }\n  updateName(user_name) {\n    this.user_name = user_name;\n  }\n  updateChatRoom(room) {\n    this.room = room;\n    console.log(\"room updated\");\n    // if (this.unsub) {\n    //   this.unsub();\n    // }\n  }\n}\n\nconst chatroom = new Chatroom(\"general\", \"Junie\");\n// console.log(chatroom);\n\nchatroom.getMessages((data) => {\n  console.log(data);\n});\n\n// setting up real-time listener to get new chats\n\n// chatroom.updateChatRoom(\"gaming\");\n\nsetTimeout(() => {\n  chatroom.updateChatRoom(\"gaming\");\n  chatroom.updateName(\"walnut\");\n  chatroom.getMessages((data) => {\n    console.log(data);\n  });\n  chatroom.addNewMessage(\"hello\");\n}, 3000);\n\n\n//# sourceURL=webpack://chat-room/./src/chat.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   Chatroom: () => (/* binding */ Chatroom)\n/* harmony export */ });\n/* harmony import */ var _firebase_firestore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @firebase/firestore */ \"./node_modules/@firebase/firestore/dist/index.esm2017.js\");\n/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui */ \"./src/ui.js\");\n\n\n\n\nconsole.log(\"bundle successful. Hello from chat.js\");\n\n// adding new chat documents\n\nconst db = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getFirestore)();\nconst colRef = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, \"chat\");\nclass Chatroom {\n  constructor(room, user_name) {\n    this.room = room;\n    this.user_name = user_name;\n    this.chat = colRef;\n    this.unsub;\n    this.chatUI = _ui__WEBPACK_IMPORTED_MODULE_1__[\"default\"];\n  }\n  async addNewMessage(message) {\n    // Formatting chat object\n    const now = new Date();\n    const newMessage = {\n      message: message,\n      user_name: this.user_name,\n      room: this.room,\n      created_at: now,\n    };\n    // saving the chat document\n    const response = await (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.addDoc)(this.chat, newMessage);\n    return response;\n  }\n  getMessages(callback) {\n    // creating a query conditional using the 'where' method to specify rooms\n    const roomQuery = (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.query)(\n      (this.unsub = this.chat),\n      (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.where)(\"room\", \"==\", this.room, (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.orderBy)(\"created_at\"))\n    );\n    (0,_firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.onSnapshot)(roomQuery, (snapshot) => {\n      snapshot.docChanges().forEach((change) => {\n        if (change.type === \"added\") {\n          callback(change.doc._document.data.value.mapValue.fields);\n        }\n      });\n    });\n  }\n  updateName(user_name) {\n    this.user_name = user_name;\n  }\n  updateChatRoom(room) {\n    this.room = room;\n    console.log(\"room updated\");\n    // if (this.unsub != null) {\n    //   this.unsub();\n    // }\n  }\n}\n\n// setting up real-time listener to get new chats;\n\n\n//# sourceURL=webpack://chat-room/./src/chat.js?");
 
 /***/ }),
 
@@ -47,6 +57,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _fir
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ \"./node_modules/firebase/app/dist/esm/index.esm.js\");\n/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/firestore */ \"./node_modules/firebase/firestore/dist/esm/index.esm.js\");\n\n\nconsole.log(\"bundle successful. Hello from index.js\");\n\n// For Firebase JS SDK v7.20.0 and later, measurementId is optional\nconst firebaseConfig = {\n  apiKey: \"AIzaSyDxXzoaGbLRsusIR1vtUqa5JVXQtiUX3SE\",\n  authDomain: \"chat-room-7be1f.firebaseapp.com\",\n  projectId: \"chat-room-7be1f\",\n  storageBucket: \"chat-room-7be1f.firebasestorage.app\",\n  messagingSenderId: \"12639144394\",\n  appId: \"1:12639144394:web:74190b466b6034a51d2733\",\n  measurementId: \"G-G387D6DY6T\",\n};\n\n// Initializing the app\n(0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.initializeApp)(firebaseConfig);\n\n// Initializing the service\nconst db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();\n\n// Collection reference\nconst colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, \"chat\");\n\n// Get collection data\n(0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(colRef)\n  .then((snapshot) => {\n    let messages = [];\n    snapshot.docs.forEach((text) => {\n      messages.push({ ...text.data(), id: text.id });\n    });\n    // console.log(messages);\n  })\n  .catch((err) => {\n    console.log(err);\n  });\n\n\n//# sourceURL=webpack://chat-room/./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/ui.js":
+/*!*******************!*\
+  !*** ./src/ui.js ***!
+  \*******************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ ChatUI)\n/* harmony export */ });\nconsole.log(\"bundle successful. Hello from ui.js\");\nclass ChatUI {\n  constructor(list) {\n    this.list = list;\n  }\n  render(data) {\n    const when = dateFns.distanceInWordsToNow(data.created_at.timestampValue, {\n      addSuffix: true,\n    });\n    const html = `\n    <li class =\"list-group-item\">\n        <span class=\"username\">${data.user_name.stringValue}:</span>\n        <span class=\"message\">${data.message.stringValue}</span>\n        <div class=\"time\">${when}</div>\n    </li>\n    `;\n    this.list.innerHTML += html;\n  }\n}\n\n\n//# sourceURL=webpack://chat-room/./src/ui.js?");
 
 /***/ }),
 
@@ -213,7 +233,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	__webpack_require__("./src/index.js");
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/chat.js");
+/******/ 	__webpack_require__("./src/chat.js");
+/******/ 	__webpack_require__("./src/app.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/ui.js");
 /******/ 	
 /******/ })()
 ;

@@ -8,18 +8,21 @@ import {
   orderBy,
 } from "@firebase/firestore";
 
+import ChatUI from "./ui";
+
 console.log("bundle successful. Hello from chat.js");
 
 // adding new chat documents
 
 const db = getFirestore();
 const colRef = collection(db, "chat");
-class Chatroom {
+export class Chatroom {
   constructor(room, user_name) {
     this.room = room;
     this.user_name = user_name;
     this.chat = colRef;
     this.unsub;
+    this.chatUI = ChatUI;
   }
   async addNewMessage(message) {
     // Formatting chat object
@@ -36,9 +39,8 @@ class Chatroom {
   }
   getMessages(callback) {
     // creating a query conditional using the 'where' method to specify rooms
-    this.unsub = this.chat;
     const roomQuery = query(
-      this.chat,
+      (this.unsub = this.chat),
       where("room", "==", this.room, orderBy("created_at"))
     );
     onSnapshot(roomQuery, (snapshot) => {
@@ -55,28 +57,10 @@ class Chatroom {
   updateChatRoom(room) {
     this.room = room;
     console.log("room updated");
-    // if (this.unsub) {
+    // if (this.unsub != null) {
     //   this.unsub();
     // }
   }
 }
 
-const chatroom = new Chatroom("general", "Junie");
-// console.log(chatroom);
-
-chatroom.getMessages((data) => {
-  console.log(data);
-});
-
-// setting up real-time listener to get new chats
-
-// chatroom.updateChatRoom("gaming");
-
-setTimeout(() => {
-  chatroom.updateChatRoom("gaming");
-  chatroom.updateName("walnut");
-  chatroom.getMessages((data) => {
-    console.log(data);
-  });
-  chatroom.addNewMessage("hello");
-}, 3000);
+// setting up real-time listener to get new chats;

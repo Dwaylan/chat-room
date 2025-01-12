@@ -1,38 +1,42 @@
-import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  // addDoc,
-  // deleteDoc,
-  // doc,
-} from "firebase/firestore";
+import { Chatroom } from "./chat";
+import ChatUI from "./ui";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDxXzoaGbLRsusIR1vtUqa5JVXQtiUX3SE",
-  authDomain: "chat-room-7be1f.firebaseapp.com",
-  projectId: "chat-room-7be1f",
-  storageBucket: "chat-room-7be1f.firebasestorage.app",
-  messagingSenderId: "12639144394",
-  appId: "1:12639144394:web:74190b466b6034a51d2733",
-  measurementId: "G-G387D6DY6T",
-};
+console.log("bundle successful. Hello from app.js");
 
-// Initializing app
-initializeApp(firebaseConfig);
+// DOM queries
+const chatList = document.querySelector(".chat-list");
+const chatUI = new ChatUI(chatList);
+const updateMessage = document.querySelector(".update-mssg");
 
-// Initializing services and database
+const newChatForm = document.querySelector(".new-chat");
+newChatForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const message = newChatForm.message.value.trim();
+  chatroom
+    .addNewMessage(message)
+    .then(() => {
+      newChatForm.reset();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
-const db = getFirestore();
+// Update username
+const nameUpdate = document.querySelector(".new-name");
+nameUpdate.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // update name via chatroom class
+  const newName = nameUpdate.name.value.trim();
+  chatroom.updateName(newName);
+  // resetting form
+  nameUpdate.reset();
+});
 
-// Collection reference
-const colRef = collection(db, "chat");
+const chatroom = new Chatroom("general", "Junie");
 
-// real time collection data
-onSnapshot(colRef, (snapshot) => {
-  let conversations = [];
-  snapshot.docs.forEach((chat) => {
-    conversations.push({ ...chat.data(), id: chat.id });
-  });
-  console.log(conversations);
+// Get chats and render
+chatroom.getMessages((data) => {
+  chatUI.render(data);
+  console.log(data);
 });
