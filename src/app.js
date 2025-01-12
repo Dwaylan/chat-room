@@ -6,6 +6,32 @@ console.log("bundle successful. Hello from app.js");
 // DOM queries
 const chatList = document.querySelector(".chat-list");
 const chatUI = new ChatUI(chatList);
+const updateMessage = document.querySelector(".update-mssg");
+
+const newChatForm = document.querySelector(".new-chat");
+newChatForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const message = newChatForm.message.value.trim();
+  chatroom
+    .addNewMessage(message)
+    .then(() => {
+      newChatForm.reset();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// Update username
+const nameUpdate = document.querySelector(".new-name");
+nameUpdate.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // update name via chatroom class
+  const newName = nameUpdate.name.value.trim();
+  chatroom.updateName(newName);
+  // resetting form
+  nameUpdate.reset();
+});
 
 const chatroom = new Chatroom("general", "Junie");
 
