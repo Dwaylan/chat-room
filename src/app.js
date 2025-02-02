@@ -31,6 +31,11 @@ nameUpdate.addEventListener("submit", (e) => {
   chatroom.updateName(newName);
   // resetting form
   nameUpdate.reset();
+  // Briefly show an update message
+  updateMessage.innerText = `Your name was updated to ${newName}`;
+  setTimeout(() => {
+    updateMessage.innerText = "";
+  }, 3000);
 });
 
 const chatroom = new Chatroom("general", "Junie");
