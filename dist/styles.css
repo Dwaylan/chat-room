@@ -1,6 +1,9 @@
 .container {
   max-width: 600px;
 }
+.auth-container {
+  max-width: 600px;
+}
 .btn {
   background: #43d9be;
   color: white;
@@ -17,4 +20,8 @@
 .time {
   font-size: 0.7em;
   color: #999;
+}
+.update-mssg {
+  text-align: center;
+  margin: 20px auto;
 }

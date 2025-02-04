@@ -7,6 +7,7 @@ console.log("bundle successful. Hello from app.js");
 const chatList = document.querySelector(".chat-list");
 const chatUI = new ChatUI(chatList);
 const updateMessage = document.querySelector(".update-mssg");
+const chatRooms = document.querySelector(".chat-rooms");
 
 const newChatForm = document.querySelector(".new-chat");
 newChatForm.addEventListener("submit", (e) => {
@@ -38,7 +39,21 @@ nameUpdate.addEventListener("submit", (e) => {
   }, 3000);
 });
 
-const chatroom = new Chatroom("general", "Junie");
+// Check local storage for user name
+const username = localStorage.user_name ? localStorage.user_name : "anon";
+
+// Update charoom
+chatRooms.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    chatUI.clear();
+    chatroom.updateChatRoom(e.target.getAttribute("id"));
+    chatroom.getMessages((messages) => {
+      chatUI.render(messages);
+    });
+  }
+});
+
+const chatroom = new Chatroom("general", username);
 
 // Get chats and render
 chatroom.getMessages((data) => {
