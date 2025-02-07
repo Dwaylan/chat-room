@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 console.log("bundle successful. Hello from index.js");
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -18,6 +19,7 @@ initializeApp(firebaseConfig);
 
 // Initializing the service
 const db = getFirestore();
+const auth = getAuth();
 
 // Collection reference
 const colRef = collection(db, "chat");
@@ -34,3 +36,19 @@ getDocs(colRef)
   .catch((err) => {
     console.log(err);
   });
+
+// Signing user(s) up
+const signUpForm = document.querySelector(".signup");
+signUpForm.addEventListener("submit", (e) => {
+  const email = signUpForm.email.value;
+  const password = signUpForm.password.value;
+  e.preventDefault();
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user created", cred.user);
+      signUpForm.reset();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});

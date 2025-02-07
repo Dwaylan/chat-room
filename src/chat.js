@@ -53,6 +53,7 @@ export class Chatroom {
   }
   updateName(user_name) {
     this.user_name = user_name;
+    localStorage.setItem("user_name", this.user_name);
   }
   updateChatRoom(room) {
     this.room = room;
